@@ -1,0 +1,8 @@
+I have an application to check health of node, i.e. CPU utilization, or checking volume on node. 
+
+In this case one insance of Pod needs to be run on each node.
+
+
+In this case need to use daemon set instead to ensure Pod will run on each node. 
+
+ 
