@@ -1,0 +1,18 @@
+Que :Find out what is the command to "get" the running jobs
+Ans :  kubectl get cj or kubectl get jobs
+
+
+NAME                                                   COMPLETIONS   DURATION   AGE
+job.batch/batch-job-every-fifteen-minutes-1654067700   1/1           2m4s       42m
+job.batch/batch-job-every-fifteen-minutes-1654068600   1/1           2m4s       27m
+job.batch/batch-job-every-fifteen-minutes-1654069500   1/1           2m3s       12m
+
+NAME                                            SCHEDULE             SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/batch-job-every-fifteen-minutes   0,15,30,45 * * * *   False     0        12m             96m
+
+
+in every 15 min scheduler is triggering and creating the job.
+
+que : What is the change from normal Jobs (jobs v/s cronJobs) - Your observation in one sentence.
+Ans : jobs will excute there task once when it triggered but cronjob will excute the task based on defined shcedule.
+
