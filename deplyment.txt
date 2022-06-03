@@ -1,0 +1,67 @@
+create service
+-----------------
+[root@ip-172-31-16-54 09-deployments]# kubectl apply -f kubia-deployment-and-service-v1.yaml
+deployment.apps/kubia created
+service/kubia created
+[root@ip-172-31-16-54 09-deployments]#
+
+check service
+--------------
+[root@ip-172-31-16-54 09-deployments]# kubectl get svc kubia
+NAME    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+kubia   ClusterIP   10.102.207.172   <none>        80/TCP    36s
+[root@ip-172-31-16-54 09-deployments]#
+
+[root@ip-172-31-16-54 09-deployments]# curl 10.102.207.172:80
+This is v1 running in pod kubia-59d857b444-257n2
+[root@ip-172-31-16-54 09-deployments]#
+
+check pod
+----------
+[root@ip-172-31-16-54 09-deployments]# kubectl get po
+NAME                     READY   STATUS    RESTARTS   AGE
+kubia-59d857b444-257n2   1/1     Running   0          5m46s
+kubia-59d857b444-f9q48   1/1     Running   0          5m46s
+kubia-59d857b444-wfm9q   1/1     Running   0          5m46s
+[root@ip-172-31-16-54 09-deployments]#
+
+
+
+add path time delay
+--------------------
+[root@ip-172-31-16-54 09-deployments]# kubectl patch deployment kubia -p '{"spec": {"minReadySeconds": 10}}'
+deployment.apps/kubia patched
+[root@ip-172-31-16-54 09-deployments]#
+
+change image
+-----------
+[root@ip-172-31-16-54 09-deployments]# kubectl set image deployment kubia nodejs=luksa/kubia:v2
+deployment.apps/kubia image updated
+[root@ip-172-31-16-54 09-deployments]# 
+
+Image is changed in PODs
+-------------------------
+[root@ip-172-31-16-54 09-deployments]# kubectl get po -o wide
+NAME                     READY   STATUS        RESTARTS   AGE     IP                NODE                                              NOMINATED NODE   READINESS GATES
+kubia-59d857b444-257n2   1/1     Terminating   0          7m33s   192.168.161.84    ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-59d857b444-f9q48   1/1     Terminating   0          7m33s   192.168.161.90    ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-59d857b444-wfm9q   1/1     Terminating   0          7m33s   192.168.161.79    ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-7d5c456ffc-gvxh7   1/1     Running       0          23s     192.168.161.108   ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-7d5c456ffc-nvlxx   1/1     Running       0          11s     192.168.161.109   ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-7d5c456ffc-xch66   1/1     Running       0          39s     192.168.161.92    ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+[root@ip-172-31-16-54 09-deployments]#
+
+[root@ip-172-31-16-54 09-deployments]# kubectl get po -o wide
+NAME                     READY   STATUS    RESTARTS   AGE    IP                NODE                                              NOMINATED NODE   READINESS GATES
+kubia-7d5c456ffc-gvxh7   1/1     Running   0          85s    192.168.161.108   ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-7d5c456ffc-nvlxx   1/1     Running   0          73s    192.168.161.109   ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+kubia-7d5c456ffc-xch66   1/1     Running   0          101s   192.168.161.92    ip-172-31-16-54.ap-southeast-1.compute.internal   <none>           <none>
+[root@ip-172-31-16-54 09-deployments]# kubectl get svc kibna
+Error from server (NotFound): services "kibna" not found
+[root@ip-172-31-16-54 09-deployments]# kubectl get svc kubia
+NAME    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+kubia   ClusterIP   10.102.207.172   <none>        80/TCP    8m53s
+[root@ip-172-31-16-54 09-deployments]# curl 10.102.207.172:80
+This is v2 running in pod kubia-7d5c456ffc-xch66
+[root@ip-172-31-16-54 09-deployments]#
+
