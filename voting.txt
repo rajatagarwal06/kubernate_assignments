@@ -1,0 +1,14 @@
+Not able to get output of commands as VM was gone. 
+Following was done during running app
+  clone repo
+  apply project using "kubectl apply -f ."
+  check IP using "kubectl get svc"
+  get pods using "kubectl get po -0 wide"
+  delete pod using "kubectl delete <pod name>
+  once pod deleted new pod created. 
+  on delete of voting pod new pod is created and no change app work fine. 
+  on delete of worker app new pod created no change 
+  on delete of db pod, resutls was not showing proper. and worker pod restarted
+  check logs using "kubectl log pod_name
+  there is error in result pod as it trying to connect on old connection 
+  once restarted result pod app started working properly
